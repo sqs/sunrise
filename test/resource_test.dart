@@ -1,7 +1,28 @@
 #import('package:unittest/vm_config.dart');
 #import('package:unittest/unittest.dart');
 
+// VM-only
+#import("dart:io");
+
 #import('package:sunrise/sunrise.dart');
+
+// VM-only
+class MockHttpClientResponse extends Mock implements HttpClientResponse {}
+
+class MockHttpClientConnection extends Mock implements HttpClientConnection {
+  set onResponse(void callback(HttpClientResponse response)) {
+    var response = new MockHttpClientResponse();
+
+    var stream = new ListInputStream();
+    stream.write('["mercury"]'.charCodes());
+    stream.markEndOfStream();
+
+    response.when(callsTo('get inputStream')).alwaysReturn(stream);
+    callback(response);
+  }
+}
+
+class MockHttpClient extends Mock implements HttpClient {}
 
 main() {
   useVmConfiguration();
@@ -10,6 +31,23 @@ main() {
     test('creates with base URL', () {
       var planets = new Resource('/planets');
       expect(planets.url, equals('/planets'));
+    });
+
+    group('query', () {
+      group('basic', () {
+        test('issues HTTP request and parses JSON', () {
+          HttpClientConnection clientConn = new MockHttpClientConnection();
+          HttpClient client = new MockHttpClient();
+
+          var clientCall = callsTo('get', 'localhost', 9000, '/planets');
+          client.when(clientCall).alwaysReturn(clientConn);
+
+          var planets = new Resource('/planets', httpClient: client);
+          planets.query({}, expectAsync1((data) => expect(['mercury'], data)));
+
+          client.getLogs(clientCall).verify(happenedOnce);
+        });
+      });
     });
   });
 }
