@@ -1,1 +1,4 @@
 name: sunrise
+dependencies:
+  unittest:
+    sdk: unittest
