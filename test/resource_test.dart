@@ -53,5 +53,22 @@ main() {
         });
       });
     });
+
+    group('get', () {
+      group('basic', () {
+        test('issues HTTP request and parses JSON', () {
+          HttpClientConnection clientConn = new MockHttpClientConnection('{"id": "mercury", "name": "Mercury"}');
+          HttpClient client = new MockHttpClient();
+
+          var clientCall = callsTo('get', 'localhost', 9000, '/planets/mercury');
+          client.when(clientCall).alwaysReturn(clientConn);
+
+          var planets = new Resource('/planets', httpClient: client);
+          planets.get({'id': 'mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
+
+          client.getLogs(clientCall).verify(happenedOnce);          
+        });
+      });
+    });
   });
 }
