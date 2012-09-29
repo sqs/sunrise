@@ -1,0 +1,5 @@
+/out/
+
+/packages
+/test/packages
+pubspec.lock
