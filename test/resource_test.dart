@@ -10,11 +10,15 @@
 class MockHttpClientResponse extends Mock implements HttpClientResponse {}
 
 class MockHttpClientConnection extends Mock implements HttpClientConnection {
+  final String responseText;
+
+  MockHttpClientConnection(this.responseText);
+
   set onResponse(void callback(HttpClientResponse response)) {
     var response = new MockHttpClientResponse();
 
     var stream = new ListInputStream();
-    stream.write('["mercury"]'.charCodes());
+    stream.write(responseText.charCodes());
     stream.markEndOfStream();
 
     response.when(callsTo('get inputStream')).alwaysReturn(stream);
@@ -36,7 +40,7 @@ main() {
     group('query', () {
       group('basic', () {
         test('issues HTTP request and parses JSON', () {
-          HttpClientConnection clientConn = new MockHttpClientConnection();
+          HttpClientConnection clientConn = new MockHttpClientConnection('["mercury"]');
           HttpClient client = new MockHttpClient();
 
           var clientCall = callsTo('get', 'localhost', 9000, '/planets');
