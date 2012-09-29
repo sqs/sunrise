@@ -22,7 +22,6 @@ void preprocessTextNodes(Node node) {
       String bindExpr = m.group(1);
 
       var startPos = nodeText.indexOf(fullBinding);
-      var endPos = startPos + fullBinding.length;
 
       // Split the text node right before the binding so we have 2 nodes:
       // * textNode, which contains the normal text leading up to the binding
