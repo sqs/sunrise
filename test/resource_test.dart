@@ -1,35 +1,34 @@
-#import('package:unittest/vm_config.dart');
+#import('package:unittest/html_config.dart');
 #import('package:unittest/unittest.dart');
 
-// VM-only
-#import("dart:io");
+#import('dart:html', prefix:'html');
 
 #import('package:sunrise/sunrise.dart');
 
-// VM-only
-class MockHttpClientResponse extends Mock implements HttpClientResponse {}
-
-class MockHttpClientConnection extends Mock implements HttpClientConnection {
-  final String responseText;
-
-  MockHttpClientConnection(this.responseText);
-
-  set onResponse(void callback(HttpClientResponse response)) {
-    var response = new MockHttpClientResponse();
-
-    var stream = new ListInputStream();
-    stream.write(responseText.charCodes());
-    stream.markEndOfStream();
-
-    response.when(callsTo('get inputStream')).alwaysReturn(stream);
-    callback(response);
+class MockHttpRequest extends Mock implements html.HttpRequest {}
+class MockHttpRequestEvents extends Mock implements html.HttpRequestEvents {}
+class MockEventListenerList extends Mock implements html.EventListenerList {
+  html.EventListenerList add(html.EventListener handler, [bool useCapture]) {
+    handler(null);
   }
 }
 
-class MockHttpClient extends Mock implements HttpClient {}
+HttpRequestFactory mockHttpRequestFactory(String responseText) {
+  return () {
+    html.HttpRequest r = new MockHttpRequest();
+    html.HttpRequestEvents mockEvents = new MockHttpRequestEvents();
+    html.EventListenerList mockLoadEvents = new MockEventListenerList();
+
+    r.when(callsTo('get on')).alwaysReturn(mockEvents);
+    r.when(callsTo('get responseText')).alwaysReturn(responseText);
+    mockEvents.when(callsTo('get load')).alwaysReturn(mockLoadEvents);
+
+    return r;
+  };
+}
 
 main() {
-  useVmConfiguration();
+  useHtmlConfiguration();
 
   group('Resource', () {
     test('creates with base URL', () {
@@ -40,16 +39,8 @@ main() {
     group('query', () {
       group('basic', () {
         test('issues HTTP request and parses JSON', () {
-          HttpClientConnection clientConn = new MockHttpClientConnection('["mercury"]');
-          HttpClient client = new MockHttpClient();
-
-          var clientCall = callsTo('get', 'localhost', 9000, '/planets');
-          client.when(clientCall).alwaysReturn(clientConn);
-
-          var planets = new Resource('/planets', httpClient: client);
+          var planets = new Resource('/planets', httpRequestFactory: mockHttpRequestFactory('["mercury"]'));
           planets.query({}, expectAsync1((data) => expect(['mercury'], data)));
-
-          client.getLogs(clientCall).verify(happenedOnce);
         });
       });
     });
@@ -57,16 +48,9 @@ main() {
     group('get', () {
       group('basic', () {
         test('issues HTTP request and parses JSON', () {
-          HttpClientConnection clientConn = new MockHttpClientConnection('{"id": "mercury", "name": "Mercury"}');
-          HttpClient client = new MockHttpClient();
-
-          var clientCall = callsTo('get', 'localhost', 9000, '/planets/mercury');
-          client.when(clientCall).alwaysReturn(clientConn);
-
-          var planets = new Resource('/planets', httpClient: client);
+          String responseText = '{"id": "mercury", "name": "Mercury"}';
+          var planets = new Resource('/planets', httpRequestFactory: mockHttpRequestFactory(responseText));
           planets.get({'id': 'mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
-
-          client.getLogs(clientCall).verify(happenedOnce);          
         });
       });
     });

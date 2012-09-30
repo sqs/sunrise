@@ -1,6 +1,6 @@
 #library('sunrise');
 
-#import("dart:io");
 #import("dart:json");
+#import("dart:html");
 
 #source('resource.dart');

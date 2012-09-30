@@ -1,37 +1,37 @@
-typedef void HttpClientResponseCallback(HttpClientResponse response);
+typedef HttpRequest HttpRequestFactory();
+typedef void HttpClientResponseCallback(HttpRequest request);
 
 class Resource {
   String url;
 
-  final HttpClient httpClient;
+  final HttpRequestFactory httpRequestFactory;
 
-  Resource(String url, [HttpClient httpClient = null])
+  Resource(String url, [HttpRequestFactory httpRequestFactory = null])
   : url = url,
-    httpClient = ((httpClient != null) ? httpClient : new HttpClient()) {
+    httpRequestFactory = (httpRequestFactory != null) ? httpRequestFactory : (() => new HttpRequest()) {
   }
 
   void query(Map<String, String> params, void onSuccess(Object data)) {
-    HttpClientConnection clientConn = httpClient.get('localhost', 9000, url);
-    clientConn.onResponse = _makeResponseHandler(onSuccess);
+    HttpRequest r = httpRequestFactory();
+    _addResponseHandler(r, onSuccess);
+
+    r.open('GET', url, true);
   }
 
   void get(Map<String, String> params, void onSuccess(Object data)) {
+    HttpRequest r = httpRequestFactory();
+    _addResponseHandler(r, onSuccess);
+
     String id = params['id'];
-    HttpClientConnection clientConn = httpClient.get('localhost', 9000, '${url}/${id}');
-    clientConn.onResponse = _makeResponseHandler(onSuccess);
+    String getUrl = '${url}/${id}';
+
+    r.open('GET', url, true);
   }
 
-  HttpClientResponseCallback _makeResponseHandler(void onSuccess(Object data)) {
-    return (HttpClientResponse response) {
-      StringInputStream stream = new StringInputStream(response.inputStream);
-      StringBuffer body = new StringBuffer();
-      stream.onData = () {
-        body.add(stream.read());
-      };
-      stream.onClosed = () {
-        Object data = JSON.parse(body.toString());
-        onSuccess(data);
-      };
-    };
+  void _addResponseHandler(HttpRequest request, void onSuccess(Object data)) {
+    request.on.load.add((event) {
+      Object data = JSON.parse(request.responseText);
+      onSuccess(data);
+    });
   }
 }
