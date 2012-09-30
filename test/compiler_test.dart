@@ -5,10 +5,9 @@
 #import('package:unittest/unittest.dart');
 
 TestCompiler() {
-  DivElement divWithText(String text) {
-    DivElement div = new DivElement();
-    div.nodes.add(new Text(text));
-    return div;
+  Text textInDiv(String text) {
+    DivElement div = new Element.html('<div>${text}</div>');
+    return div.nodes[0];
   }
 
   group('scopedBoundDirectives', () {
@@ -81,12 +80,25 @@ TestCompiler() {
       expect(directives[1].name, 'testColor');
       expect(directives[1] is AttributeDirective, reason: '${directives[1]} is not AttributeDirective');
     });
+
+    test('text node with bindings', () {
+      DirectiveRegistry regWithBind = new DirectiveRegistry(
+        attributeDirectives: {'ng-bind': [new AttributeDirective('bind')]});
+      Text textNode = textInDiv('Hello, {{ name }}');
+
+      var textDirectives = directives(textNode, regWithBind);
+      expect(textDirectives.length, 0);
+
+      var divDirectives = directives(textNode.parent.nodes[1], regWithBind);
+      expect(divDirectives[0].name, 'bind');
+    });
   });
 
-  group('processBindingsInTextNodes', () {
+  group('compileBindingsInTextNode', () {
     test('replace {{ ... }} with <span> tag', () {
-      Element div = divWithText('Hello, {{ name }}!');
-      processBindingsInTextNodes(div);
+      Text textNode = textInDiv('Hello, {{ name }}!');
+      DivElement div = textNode.parent;
+      compileBindingsInTextNode(textNode);
 
       expect(div.nodes.length, 3);
       expect(div.nodes[0].data, 'Hello, ');
@@ -97,23 +109,37 @@ TestCompiler() {
       expect(boundElement.attributes['ng-bind'], 'name');
     });
 
-    test('do not introduce extraneous empty text nodes', () {
-      Element div = divWithText('{{ expr1 }}{{ expr2 }}');
-      processBindingsInTextNodes(div);
+    test('do not introduce extraneous empty text nodes (except at the beginning)', () {
+      // We don't want to remove empty text nodes at the beginning, because we want
+      // to be able to iterate over the DOM while we are performing
+      // compileBindingsInTextNode operations. If we can guarantee that the operation
+      // only adds new DOM nodes that need compilation *after* the current node, then
+      // we can just use a straight for-loop instead of having to potentially repeat indices.
+      //
+      // But removing them at the end is fine.
+        
+      Text textNode = textInDiv('{{ expr1 }}{{ expr2 }}');
+      DivElement div = textNode.parent;
+      compileBindingsInTextNode(textNode);
 
-      expect(div.nodes.length, 2);
-      expect(div.nodes[0].attributes['ng-bind'], 'expr1');
-      expect(div.nodes[1].attributes['ng-bind'], 'expr2');
+      expect(div.nodes.length, 3);
+      expect(div.nodes[0] is Text, reason: '${div.nodes[0]} is not Text');
+      expect(div.nodes[0].data, '');
+      expect(div.nodes[1].attributes['ng-bind'], 'expr1');
+      expect(div.nodes[2].attributes['ng-bind'], 'expr2');
     });
 
     test('replace multiple bindings in a single text node', () {
-      Element div = divWithText('{{ expr1 }} and {{ expr2 }}');
-      processBindingsInTextNodes(div);
+      Text textNode = textInDiv('{{ expr1 }} and {{ expr2 }}');
+      DivElement div = textNode.parent;
+      compileBindingsInTextNode(textNode);
 
-      expect(div.nodes.length, 3);
-      expect(div.nodes[0].attributes['ng-bind'], 'expr1');
-      expect(div.nodes[1].data, ' and ');
-      expect(div.nodes[2].attributes['ng-bind'], 'expr2');
+      expect(div.nodes.length, 4);
+      expect(div.nodes[0] is Text, reason: '${div.nodes[0]} is not Text');
+      expect(div.nodes[0].data, '');
+      expect(div.nodes[1].attributes['ng-bind'], 'expr1');
+      expect(div.nodes[2].data, ' and ');
+      expect(div.nodes[3].attributes['ng-bind'], 'expr2');
     });
   });
 }
