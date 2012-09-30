@@ -10,6 +10,18 @@ TestCompiler() {
     return div.nodes[0];
   }
 
+  group('AttributeInterpolationDirective', () {
+    test('updates', () {
+      Element div = new Element.html('<div shape="{{myShape}}"></div>');
+      Scope s = new Scope({'myShape': 'circle'});
+      AttributeInterpolationDirective d = new AttributeInterpolationDirective('shape');
+      d.setUp(s, div);
+      expect(div.attributes['shape'], 'circle');
+      s['myShape'] = 'square';
+      expect(div.attributes['shape'], 'square');
+    });
+  });
+
   group('scopedBoundDirectives', () {
     DirectiveRegistry reg = new DirectiveRegistry(
       elementDirectives: {'p': [new ElementDirective('testP')]});
@@ -91,6 +103,14 @@ TestCompiler() {
 
       var divDirectives = directives(textNode.parent.nodes[1], regWithBind);
       expect(divDirectives[0].name, 'bind');
+    });
+
+    test('attributes needing interpolation', () {
+      Element e = new Element.html('<p shape="{{myShape}}"></p>');
+      var ds = directives(e, new DirectiveRegistry());
+      expect(ds.length, 1);
+      expect(ds[0] is AttributeInterpolationDirective, reason: '${ds[0]} is not AttributeInterpolationDirective');
+      expect(ds[0].name, '_interpolation');
     });
   });
 

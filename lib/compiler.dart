@@ -40,6 +40,28 @@ List<BoundDirective> boundDirectives(List<Node> nodeList, DirectiveRegistry regi
   return _boundDirectives;
 }
 
+class AttributeInterpolationDirective extends AttributeDirective {
+  final String attributeName;
+
+  AttributeInterpolationDirective(this.attributeName) : super('_interpolation');
+
+  def setUp(Scope scope, Element element) {
+    String attributeVal = element.attributes[attributeName];
+
+    update() {
+      element.attributes[attributeName] = interpolateString(attributeVal, scope);
+    };
+
+    update();
+
+    interpolationExpressions(attributeVal).forEach((String expr) {
+      scope.addListener(expr, (String _, Object __) {
+        update();
+      });
+    });
+  }
+}
+
 List<Directive> directives(Node node, DirectiveRegistry registry) {
   List<Directive> _directives = [];
 
@@ -50,6 +72,9 @@ List<Directive> directives(Node node, DirectiveRegistry registry) {
       _directives.addAll(registry.elementDirectives(elem.tagName));
 
       elem.attributes.forEach((String name, String val) {
+        if (stringHasExpressionsToInterpolate(val)) {
+          _directives.add(new AttributeInterpolationDirective(name));
+        }
         _directives.addAll(registry.attributeDirectives(name));
       });
 
