@@ -7,8 +7,15 @@ class InputDirective extends ElementDirective {
     String attributeKey = 'ng-model';
     String binding = element.attributes[attributeKey];
     assert(binding != null);
-    element.on.input.add((Event event) {
+
+    void update() {
       scope[binding] = inputElement.value;
+    }
+
+    update();
+
+    element.on.input.add((Event event) {
+      update();
     });
   }
 }
