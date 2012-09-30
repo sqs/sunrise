@@ -11,6 +11,39 @@ TestCompiler() {
     return div;
   }
 
+  group('collectDirectives', () {
+    DirectiveRegistry reg = new DirectiveRegistry(
+      elementDirectives: {'p': [new ElementDirective('testP')]},
+      attributeDirectives: {'color': [new AttributeDirective('testColor')]});
+
+    test('unattributed element', () {
+      Element appRoot = new Element.html('<p></p>');
+      var directives = collectDirectives(appRoot, reg);
+      expect(directives.length, 1);
+      expect(directives[0].name, 'testP');
+      expect(directives[0] is ElementDirective, reason: '${directives[0]} is not ElementDirective');
+    });
+
+    test('only collect directives from root element', () {
+      Element appRoot = new Element.html('<p></p>');
+      appRoot.innerHTML = '<p><p></p></p>';
+      var directives = collectDirectives(appRoot, reg);
+      expect(directives.length, 1);
+      expect(directives[0].name, 'testP');
+      expect(directives[0] is ElementDirective, reason: '${directives[0]} is not ElementDirective');
+    });
+
+    test('attributed element', () {
+      Element appRoot = new Element.html('<p color="red" shape="circle"></p>');
+      var directives = collectDirectives(appRoot, reg);
+      expect(directives.length, 2);
+      expect(directives[0].name, 'testP');
+      expect(directives[0] is ElementDirective, reason: '${directives[0]} is not ElementDirective');
+      expect(directives[1].name, 'testColor');
+      expect(directives[1] is AttributeDirective, reason: '${directives[1]} is not AttributeDirective');
+    });
+  });
+
   group('processBindingsInTextNodes', () {
     test('replace {{ ... }} with <span> tag', () {
       Element div = divWithText('Hello, {{ name }}!');

@@ -42,35 +42,37 @@ void processBindingsInTextNodes(Node node) {
   }
 }
 
-void compileDirectives(Element appRoot) {
-  for (Element modelBoundInput in appRoot.queryAll('input[ng-model]')) {
-    String modelExpr = modelBoundInput.attributes['ng-model'];
-    // TODO: escape modelExpr before using it in the queryAll selector
-    for (Element boundElement in appRoot.queryAll('[ng-bind="${modelExpr}"]')) {
-      modelBoundInput.on.input.add((event) {
-        String inputValue = modelBoundInput.value;
+void compile(Element appRoot, DirectiveRegistry registry) {
+  compileNodes([appRoot], registry);
+}
 
-        // Set the bound element's text data to the new inputValue
-        Text newInputValueTextNode = new Text(inputValue);
-        if (boundElement.hasChildNodes()) {
-          boundElement.$dom_replaceChild(newInputValueTextNode, boundElement.$dom_firstChild);
-        } else {
-          boundElement.$dom_appendChild(newInputValueTextNode);
-        }
-      });
-    }
+void compileNodes(List<Node> nodeList, DirectiveRegistry registry) {
+  for (var i = 0; i < nodeList.length; i++) {
+    // Always refer to this node as nodeList[i], since it could be replaced beneath us
+
+    List<Directive> directives = collectDirectives(nodeList[i], registry);
+
+    compileNodes(nodeList[i].nodes, registry);
+  }
+}
+
+List<Directive> collectDirectives(Node node, DirectiveRegistry registry) {
+  List<Directive> directives = [];
+
+  switch(node.$dom_nodeType) {
+    case Node.ELEMENT_NODE:
+      Element elem = node;
+
+      directives.addAll(registry.elementDirectives(elem.tagName));
+
+      for (String attributeKey in elem.attributes.getKeys()) {
+        directives.addAll(registry.attributeDirectives(attributeKey));
+      }
+
+      break;
+    case Node.TEXT_NODE:
+      break;
   }
 
-  final mainLib = currentMirrorSystem().isolate.rootLibrary;
-  for (Element controllerRootElement in appRoot.queryAll('[ng-controller]')) {
-    String ctrlClassName = controllerRootElement.attributes['ng-controller'];
-    ClassMirror ctrlCM = mainLib.classes[ctrlClassName];
-    if (ctrlCM == null) {
-      throw 'Controller class "${ctrlClassName}" not found in main library "${mainLib.qualifiedName}"';
-    }
-    ctrlCM.newInstance('', []).then((InstanceMirror ctrlIM) {
-      Controller ctrl = ctrlIM.reflectee;
-      ctrl.rootElement = controllerRootElement;
-    });
-  }
+  return directives;
 }
