@@ -60,4 +60,17 @@ void compileDirectives(Element appRoot) {
       });
     }
   }
+
+  final mainLib = currentMirrorSystem().isolate.rootLibrary;
+  for (Element controllerRootElement in appRoot.queryAll('[ng-controller]')) {
+    String ctrlClassName = controllerRootElement.attributes['ng-controller'];
+    ClassMirror ctrlCM = mainLib.classes[ctrlClassName];
+    if (ctrlCM == null) {
+      throw 'Controller class "${ctrlClassName}" not found in main library "${mainLib.qualifiedName}"';
+    }
+    ctrlCM.newInstance('', []).then((InstanceMirror ctrlIM) {
+      Controller ctrl = ctrlIM.reflectee;
+      ctrl.rootElement = controllerRootElement;
+    });
+  }
 }
