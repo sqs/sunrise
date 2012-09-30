@@ -23,4 +23,14 @@ class DirectiveRegistry {
       return [];
     }
   }
+
+  static DirectiveRegistry _singleton;
+  static DirectiveRegistry defaultRegistry() {
+    if (_singleton == null) {
+      _singleton = new DirectiveRegistry(
+                                         elementDirectives: {},
+                                         attributeDirectives: {});
+    }
+    return _singleton;
+  }
 }
