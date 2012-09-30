@@ -4,10 +4,12 @@
 
 #import('compiler_test.dart');
 #import('resource_test.dart');
+#import('scope_test.dart');
 
 main() {
   useHtmlEnhancedConfiguration();
 
   TestCompiler();
   TestResource();
+  TestScope();
 }

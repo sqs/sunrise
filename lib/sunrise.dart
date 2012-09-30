@@ -10,3 +10,4 @@
 #source('directive/directive.dart');
 #source('directive_registry.dart');
 #source('resource.dart');
+#source('scope.dart');
