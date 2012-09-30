@@ -3,29 +3,37 @@ RegExp _TextBindingPattern = const RegExp(r"\{\{([^\}]+)\}\}");
 void processBindingsInTextNodes(Node node) {
   if (node.$dom_nodeType == Node.TEXT_NODE) {
     Text textNode = node;
-    String nodeText = textNode.data;
-    
-    Iterable<Match> bindingMatches = _TextBindingPattern.allMatches(nodeText);
-    for (Match m in bindingMatches) {
+
+    Match m;
+    while (textNode.parent != null && (m = _TextBindingPattern.firstMatch(textNode.data)) != null) {
       String fullBinding = m.group(0);
       String bindExpr = m.group(1).trim();
 
-      var startPos = nodeText.indexOf(fullBinding);
+      var startPos = textNode.data.indexOf(fullBinding);
+      var endPos = startPos + fullBinding.length;
 
-      // Split the text node right before the binding so we have 2 nodes:
-      // * textNode, which contains the normal text leading up to the binding
-      // * textNode2, which contains the binding string, followed by the rest of the text
-      Text textNode2 = textNode.splitText(startPos);
+      if (startPos == 0) {
+         // The binding appears at the beginning of the text node. No action needed.
+      } else {
+        // Split the text node right before the binding so we have 2 nodes:
+        // * one text node which contains the normal text leading up to the binding
+        // * one text node that contains the binding string, followed by the rest of the text
+        textNode = textNode.splitText(startPos);
+      }
 
-      // Remove the "{{ ... }}" binding expression from textNode2's text
-      textNode2.deleteData(0, fullBinding.length);
+      // Remove the "{{ ... }}" binding expression from textNode's text
+      textNode.deleteData(0, fullBinding.length);
 
-      // Insert a new element between textNode and textNode2:
+      // Insert a new element at the beginning of textNode:
       //   <span ng-bind="<bindExpr>"></span>
       // where <bindExpr> is the expression that was wrapped in {{ ... }}
       SpanElement bindingElement = new SpanElement();
       bindingElement.$dom_setAttribute('ng-bind', bindExpr);
-      textNode.parent.insertBefore(bindingElement, textNode2);
+      textNode.parent.insertBefore(bindingElement, textNode);
+
+      if (textNode.data.length == 0) {
+          textNode.remove();
+      }
     }
   } else {
     for (Node c in node.$dom_childNodes) {
