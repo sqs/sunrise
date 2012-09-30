@@ -1,4 +1,4 @@
-#import('package:unittest/html_config.dart');
+#import('package:unittest/html_enhanced_config.dart');
 #import('package:unittest/unittest.dart');
 
 #import('dart:html', prefix:'html');
@@ -28,7 +28,7 @@ HttpRequestFactory mockHttpRequestFactory(String responseText) {
 }
 
 main() {
-  useHtmlConfiguration();
+  useHtmlEnhancedConfiguration();
 
   group('Resource', () {
     test('creates with base URL', () {
