@@ -7,6 +7,8 @@
 #import('resource_test.dart');
 #import('scope_test.dart');
 
+#import('directive/input_test.dart');
+
 main() {
   useHtmlEnhancedConfiguration();
 
@@ -14,4 +16,6 @@ main() {
   TestInterpolation();
   TestResource();
   TestScope();
+
+  TestInputDirective();
 }
