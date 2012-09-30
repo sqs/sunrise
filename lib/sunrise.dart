@@ -1,7 +1,7 @@
 #library('sunrise');
 
-#import("dart:html");
-#import("dart:json");
+#import('dart:html');
+#import('dart:json');
 
 #source('bootstrap.dart');
 #source('compiler.dart');
