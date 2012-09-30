@@ -24,6 +24,12 @@ TestInterpolation() {
       expectHasExpressionsToInterpolate('name', false);
     });
 
+    test('interpolationExpressions', () {
+        expect(interpolationExpressions(''), new Set());
+        expect(interpolationExpressions('abc'), new Set());
+        expect(interpolationExpressions('{{ a }} {{b}} {{c.d}} z'), new Set.from(['a', 'b', 'c.d']));
+    });
+
     test('interpolateString', () {
       Scope s = new Scope({'color': 'red', 'size': 10, 'nested': '{{size}}'});
       expect(interpolateString('', s), '');

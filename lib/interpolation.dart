@@ -4,6 +4,10 @@ bool stringHasExpressionsToInterpolate(String string) {
   return _TextBindingPattern.hasMatch(string);
 }
 
+Set<String> interpolationExpressions(String string) {
+  return new Set.from(_TextBindingPattern.allMatches(string).map((m) => m.group(1).trim()));
+}
+
 String interpolateString(String string, Scope scope) {
   int netCharactersAdded = 0;
   for (Match m in _TextBindingPattern.allMatches(string)) {
