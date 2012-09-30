@@ -43,17 +43,30 @@ void processBindingsInTextNodes(Node node) {
 }
 
 void compile(Element appRoot, DirectiveRegistry registry) {
-  compileNodes([appRoot], registry);
+  boundDirectives([appRoot], registry);
 }
 
-void compileNodes(List<Node> nodeList, DirectiveRegistry registry) {
+class BoundDirective {
+  final Directive directive;
+  final Node node;
+  
+  BoundDirective(this.directive, this.node);
+}
+
+List<BoundDirective> boundDirectives(List<Node> nodeList, DirectiveRegistry registry) {
+  List<BoundDirective> _boundDirectives = [];
+
   for (var i = 0; i < nodeList.length; i++) {
     // Always refer to this node as nodeList[i], since it could be replaced beneath us
 
-    List<Directive> directives = collectDirectives(nodeList[i], registry);
+    List<Directive> directives = directives(nodeList[i], registry);
 
-    compileNodes(nodeList[i].nodes, registry);
+    _boundDirectives.addAll(directives.map((d) => new BoundDirective(d, nodeList[i])));
+
+    _boundDirectives.addAll(boundDirectives(nodeList[i].nodes, registry));
   }
+
+  return _boundDirectives;
 }
 
 List<Directive> directives(Node node, DirectiveRegistry registry) {

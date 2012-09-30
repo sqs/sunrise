@@ -11,6 +11,27 @@ TestCompiler() {
     return div;
   }
 
+  group('boundDirectives', () {
+    DirectiveRegistry reg = new DirectiveRegistry(
+      elementDirectives: {'p': [new ElementDirective('testP')]},
+      attributeDirectives: {'color': [new AttributeDirective('testColor')]});
+
+    test('tree', () {
+        Element appRoot = new Element.html('<div color="red"></div>');
+        appRoot.innerHTML = '<p>Hello!</p><br><p color="blue"></p>';
+        var bds = boundDirectives([appRoot], reg);
+        expect(bds.length, 4);
+        expect(bds[0].directive.name, 'testColor');
+        expect(bds[0].node.tagName, 'DIV');
+        expect(bds[1].directive.name, 'testP');
+        expect(bds[1].node.tagName, 'P');
+        expect(bds[2].directive.name, 'testP');
+        expect(bds[2].node.tagName, 'P');
+        expect(bds[3].directive.name, 'testColor');
+        expect(bds[3].node.tagName, 'P');
+    });
+  });
+
   group('directives', () {
     DirectiveRegistry reg = new DirectiveRegistry(
       elementDirectives: {'p': [new ElementDirective('testP')]},
