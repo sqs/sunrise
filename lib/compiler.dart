@@ -44,7 +44,9 @@ void processBindingsInTextNodes(Node node) {
 
 void compileDirectives(Element appRoot) {
   for (Element modelBoundInput in appRoot.queryAll('input[ng-model]')) {
-    for (Element boundElement in appRoot.queryAll('[ng-bind="yourName"]')) {
+    String modelExpr = modelBoundInput.attributes['ng-model'];
+    // TODO: escape modelExpr before using it in the queryAll selector
+    for (Element boundElement in appRoot.queryAll('[ng-bind="${modelExpr}"]')) {
       modelBoundInput.on.input.add((event) {
         String inputValue = modelBoundInput.value;
 
