@@ -62,7 +62,6 @@ List<Directive> directives(Node node, DirectiveRegistry registry) {
   return _directives;
 }
 
-RegExp _TextBindingPattern = const RegExp(r"\{\{([^\}]+)\}\}");
 
 /// Compile bindings in DOM text nodes such as:
 ///   Hello, {{ name }}!

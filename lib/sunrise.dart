@@ -11,5 +11,6 @@
 #source('directive/directive.dart');
 #source('directive/input.dart');
 #source('directive_registry.dart');
+#source('interpolation.dart');
 #source('resource.dart');
 #source('scope.dart');
