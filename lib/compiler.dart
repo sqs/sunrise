@@ -43,7 +43,22 @@ void processBindingsInTextNodes(Node node) {
 }
 
 void compile(Element appRoot, DirectiveRegistry registry) {
-  boundDirectives([appRoot], registry);
+  List<ScopedBoundDirective> sbds = scopedBoundDirectives([appRoot], registry);
+  for (ScopedBoundDirective sbd in sbds) {
+    sbd.boundDirective.directive.setUp(sbd.scope, sbd.boundDirective.node);
+  }
+}
+
+class ScopedBoundDirective {
+  final BoundDirective boundDirective;
+  final Scope scope;
+
+  ScopedBoundDirective(this.boundDirective, this.scope);
+}
+
+List<ScopedBoundDirective> scopedBoundDirectives(List<Node> nodeList, DirectiveRegistry registry) {
+  Scope rootScope = new Scope();
+  return boundDirectives(nodeList, registry).map((bd) => new ScopedBoundDirective(bd, rootScope));
 }
 
 class BoundDirective {

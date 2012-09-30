@@ -11,6 +11,24 @@ TestCompiler() {
     return div;
   }
 
+  group('scopedBoundDirectives', () {
+    DirectiveRegistry reg = new DirectiveRegistry(
+      elementDirectives: {'p': [new ElementDirective('testP')]});
+
+    test('empty', () {
+      Element appRoot = new Element.html('<div></div>'); // no bound directives
+      var sbds = scopedBoundDirectives([appRoot], reg);
+      expect(sbds.length, 0);
+    });
+
+    test('sets rootScope', () {
+      Element appRoot = new Element.html('<p></p>');
+      var sbds = scopedBoundDirectives([appRoot], reg);
+      expect(sbds.length, 1);
+      expect(sbds[0].boundDirective.node.tagName, 'P');
+    });
+  });
+
   group('boundDirectives', () {
     DirectiveRegistry reg = new DirectiveRegistry(
       elementDirectives: {'p': [new ElementDirective('testP')]},
