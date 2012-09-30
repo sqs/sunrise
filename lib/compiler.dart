@@ -64,6 +64,10 @@ List<Directive> directives(Node node, DirectiveRegistry registry) {
 
 RegExp _TextBindingPattern = const RegExp(r"\{\{([^\}]+)\}\}");
 
+/// Compile bindings in DOM text nodes such as:
+///   Hello, {{ name }}!
+/// to the equivalent explicit form:
+///   Hello, <span ng-bind="name"></span>!
 void compileBindingsInTextNode(Text textNode) {
   Match m;
   bool isFirstMatch = true;
