@@ -49,9 +49,9 @@ List<Directive> directives(Node node, DirectiveRegistry registry) {
 
       _directives.addAll(registry.elementDirectives(elem.tagName));
 
-      for (String attributeKey in elem.attributes.getKeys()) {
-        _directives.addAll(registry.attributeDirectives(attributeKey));
-      }
+      elem.attributes.forEach((String name, String val) {
+        _directives.addAll(registry.attributeDirectives(name));
+      });
 
       break;
     case Node.TEXT_NODE:
