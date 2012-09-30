@@ -28,7 +28,7 @@ TestCompiler() {
     test('do not introduce extraneous empty text nodes', () {
       Element div = divWithText('{{ expr1 }}{{ expr2 }}');
       processBindingsInTextNodes(div);
-      window.console.log(div.innerHTML);
+
       expect(div.nodes.length, 2);
       expect(div.nodes[0].attributes['ng-bind'], 'expr1');
       expect(div.nodes[1].attributes['ng-bind'], 'expr2');
