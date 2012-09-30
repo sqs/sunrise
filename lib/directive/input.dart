@@ -6,16 +6,17 @@ class InputDirective extends ElementDirective {
     InputElement inputElement = element;
     String attributeKey = 'ng-model';
     String binding = element.attributes[attributeKey];
-    assert(binding != null);
 
-    void update() {
-      scope[binding] = inputElement.value;
-    }
+    if (binding != null) {
+      void update() {
+        scope[binding] = inputElement.value;
+      }
 
-    update();
-
-    element.on.input.add((Event event) {
       update();
-    });
+
+      element.on.input.add((Event event) {
+          update();
+      });
+    }
   }
 }

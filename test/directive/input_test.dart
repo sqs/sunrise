@@ -17,5 +17,12 @@ TestInputDirective() {
       input.on.input.dispatch(new Event('input'));
       window.setTimeout(expectAsync0(() => expect(s['shape'], 'square')), 200);
     });
+
+    test('ignores <inputs> with no ng-model', () {
+      Element input = new Element.html('<input type=text value=hello>');
+      Scope s = new Scope();
+      InputDirective d = new InputDirective();
+      expect(() => d.setUp(s, input), returnsNormally);
+    });
   });
 }
