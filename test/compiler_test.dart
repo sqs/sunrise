@@ -11,14 +11,14 @@ TestCompiler() {
     return div;
   }
 
-  group('collectDirectives', () {
+  group('directives', () {
     DirectiveRegistry reg = new DirectiveRegistry(
       elementDirectives: {'p': [new ElementDirective('testP')]},
       attributeDirectives: {'color': [new AttributeDirective('testColor')]});
 
     test('unattributed element', () {
       Element appRoot = new Element.html('<p></p>');
-      var directives = collectDirectives(appRoot, reg);
+      var directives = directives(appRoot, reg);
       expect(directives.length, 1);
       expect(directives[0].name, 'testP');
       expect(directives[0] is ElementDirective, reason: '${directives[0]} is not ElementDirective');
@@ -27,7 +27,7 @@ TestCompiler() {
     test('only collect directives from root element', () {
       Element appRoot = new Element.html('<p></p>');
       appRoot.innerHTML = '<p><p></p></p>';
-      var directives = collectDirectives(appRoot, reg);
+      var directives = directives(appRoot, reg);
       expect(directives.length, 1);
       expect(directives[0].name, 'testP');
       expect(directives[0] is ElementDirective, reason: '${directives[0]} is not ElementDirective');
@@ -35,7 +35,7 @@ TestCompiler() {
 
     test('attributed element', () {
       Element appRoot = new Element.html('<p color="red" shape="circle"></p>');
-      var directives = collectDirectives(appRoot, reg);
+      var directives = directives(appRoot, reg);
       expect(directives.length, 2);
       expect(directives[0].name, 'testP');
       expect(directives[0] is ElementDirective, reason: '${directives[0]} is not ElementDirective');

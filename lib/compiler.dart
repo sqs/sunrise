@@ -56,17 +56,17 @@ void compileNodes(List<Node> nodeList, DirectiveRegistry registry) {
   }
 }
 
-List<Directive> collectDirectives(Node node, DirectiveRegistry registry) {
-  List<Directive> directives = [];
+List<Directive> directives(Node node, DirectiveRegistry registry) {
+  List<Directive> _directives = [];
 
   switch(node.$dom_nodeType) {
     case Node.ELEMENT_NODE:
       Element elem = node;
 
-      directives.addAll(registry.elementDirectives(elem.tagName));
+      _directives.addAll(registry.elementDirectives(elem.tagName));
 
       for (String attributeKey in elem.attributes.getKeys()) {
-        directives.addAll(registry.attributeDirectives(attributeKey));
+        _directives.addAll(registry.attributeDirectives(attributeKey));
       }
 
       break;
@@ -74,5 +74,5 @@ List<Directive> collectDirectives(Node node, DirectiveRegistry registry) {
       break;
   }
 
-  return directives;
+  return _directives;
 }
