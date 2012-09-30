@@ -2,5 +2,6 @@
 /out/
 
 /packages
+/bin/packages
 /test/packages
 pubspec.lock
