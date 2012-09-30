@@ -1,4 +1,5 @@
-#import('package:unittest/html_enhanced_config.dart');
+#library('resource_test');
+
 #import('package:unittest/unittest.dart');
 
 #import('dart:html', prefix:'html');
@@ -27,9 +28,7 @@ HttpRequestFactory mockHttpRequestFactory(String responseText) {
   };
 }
 
-main() {
-  useHtmlEnhancedConfiguration();
-
+TestResource() {
   group('Resource', () {
     test('creates with base URL', () {
       var planets = new Resource('/planets');
