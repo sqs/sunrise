@@ -2,10 +2,12 @@
 
 #import('package:unittest/html_enhanced_config.dart');
 
+#import('compiler_test.dart');
 #import('resource_test.dart');
 
 main() {
   useHtmlEnhancedConfiguration();
 
+  TestCompiler();
   TestResource();
 }
