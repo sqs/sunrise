@@ -12,7 +12,7 @@ TestInterpolation() {
                        'have expressions to interpolate');
       }
 
-      expectHasExpressionsToInterpolate('{{name}}', true);
+      expectHasExpressionsToInterpolate('{{ name }}', true);
       expectHasExpressionsToInterpolate('Hello, {{name}}!', true);
       expectHasExpressionsToInterpolate('{{{name}}}', true);
       expectHasExpressionsToInterpolate("{{name\n}}", true);
@@ -34,11 +34,11 @@ TestInterpolation() {
       Scope s = new Scope({'color': 'red', 'size': 10, 'nested': '{{size}}'});
       expect(interpolateString('', s), '');
       expect(interpolateString('a', s), 'a');
-      expect(interpolateString('{{color}}', s), 'red');
+      expect(interpolateString('{{ color }}', s), 'red');
       expect(interpolateString('{{size}}', s), '10');
       expect(interpolateString('a {{size}} a', s), 'a 10 a');
-      expect(interpolateString('{{color}} {{size}}', s), 'red 10');
-      expect(interpolateString('{{color}} {{color}}', s), 'red red');
+      expect(interpolateString('{{ color }} {{size}}', s), 'red 10');
+      expect(interpolateString('{{ color  }} {{  color }}', s), 'red red');
       expect(interpolateString(' {{color}}{{size}} ', s), ' red10 ');
       expect(interpolateString('{{doesnotexist}} {{size}}', s), ' 10');
       expect(interpolateString('{{nested}}', s), '{{size}}');

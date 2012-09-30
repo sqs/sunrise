@@ -12,7 +12,7 @@ String interpolateString(String string, Scope scope) {
   int netCharactersAdded = 0;
   for (Match m in _TextBindingPattern.allMatches(string)) {
     String fullBinding = m.group(0);
-    String bindExpr = m.group(1);
+    String bindExpr = m.group(1).trim();
 
     var anyVal = scope[bindExpr];
     if (anyVal == null) { anyVal = ""; }
