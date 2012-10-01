@@ -9,7 +9,10 @@ class ControllerDirective extends ElementDirective {
     scope['__controllerName'] = controllerName;
 
     Future<Controller> ctrlFuture = _newControllerFromName(controllerName);
-    
+    ctrlFuture.then((Controller ctrl) {
+      ctrl.scope = scope;
+      ctrl.init();
+    });
   }
 }
 
