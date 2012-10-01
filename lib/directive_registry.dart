@@ -29,7 +29,8 @@ class DirectiveRegistry {
     if (_singleton == null) {
       _singleton = new DirectiveRegistry(
         elementDirectives: {'input': [new InputDirective()]},
-        attributeDirectives: {'ng-bind': [new BindDirective()]});
+        attributeDirectives: {'ng-bind': [new BindDirective()],
+                              'ng-controller': [new ControllerDirective()]});
     }
     return _singleton;
   }
