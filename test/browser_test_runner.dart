@@ -7,6 +7,7 @@
 #import('resource_test.dart');
 #import('scope_test.dart');
 
+#import('directive/bind_test.dart');
 #import('directive/controller_test.dart');
 #import('directive/input_test.dart');
 
@@ -18,6 +19,7 @@ main() {
   TestResource();
   TestScope();
 
+  TestBindDirective();
   TestControllerDirective();
   TestInputDirective();
 }
