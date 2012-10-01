@@ -8,6 +8,7 @@
 #source('compiler.dart');
 #source('controller.dart');
 #source('directive/bind.dart');
+#source('directive/controller.dart');
 #source('directive/directive.dart');
 #source('directive/input.dart');
 #source('directive_registry.dart');
