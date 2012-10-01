@@ -1,3 +1,2 @@
 class Controller {
-  Element rootElement;
 }
