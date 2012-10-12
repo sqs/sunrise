@@ -16,6 +16,7 @@ class Resource {
     _addResponseHandler(r, onSuccess);
 
     r.open('GET', url, true);
+    r.send();
   }
 
   void get(Map<String, String> params, void onSuccess(Object data)) {
@@ -26,6 +27,7 @@ class Resource {
     String getUrl = '${url}/${id}';
 
     r.open('GET', url, true);
+    r.send();
   }
 
   void _addResponseHandler(HttpRequest request, void onSuccess(Object data)) {
