@@ -35,5 +35,8 @@ class Resource {
       Object data = JSON.parse(request.responseText);
       onSuccess(data);
     });
+    request.on.error.add((event) {
+      window.console.error('HttpRequest error: ${event}');
+    });
   }
 }
