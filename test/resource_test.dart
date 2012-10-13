@@ -19,10 +19,12 @@ HttpRequestFactory mockHttpRequestFactory(String responseText) {
     html.HttpRequest r = new MockHttpRequest();
     html.HttpRequestEvents mockEvents = new MockHttpRequestEvents();
     html.EventListenerList mockLoadEvents = new MockEventListenerList();
+    html.EventListenerList mockErrorEvents = new MockEventListenerList();
 
     r.when(callsTo('get on')).alwaysReturn(mockEvents);
     r.when(callsTo('get responseText')).alwaysReturn(responseText);
     mockEvents.when(callsTo('get load')).alwaysReturn(mockLoadEvents);
+    mockEvents.when(callsTo('get error')).alwaysReturn(mockErrorEvents);
 
     return r;
   };
