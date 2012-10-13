@@ -45,7 +45,7 @@ class AttributeInterpolationDirective extends AttributeDirective {
 
   AttributeInterpolationDirective(this.attributeName) : super('_interpolation');
 
-  def setUp(Scope scope, Element element) {
+  void setUp(Scope scope, Element element) {
     String attributeVal = element.attributes[attributeName];
 
     update() {
