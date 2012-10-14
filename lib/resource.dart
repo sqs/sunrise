@@ -15,48 +15,40 @@ class Resource<T> {
   }
 
   void query(Map<String, String> params, void onSuccess(Object data)) {
-    HttpRequest r = httpRequestFactory();
-    _addResponseHandler(r, onSuccess);
-
+    HttpRequest r = _makeHttpRequest(onSuccess);
     r.open('GET', url, true);
     r.send();
   }
 
   void get(Map<String, String> params, void onSuccess(Object data)) {
-    HttpRequest r = httpRequestFactory();
-    _addResponseHandler(r, onSuccess);
-
+    HttpRequest r = _makeHttpRequest(onSuccess);
     r.open('GET', _singleItemUrl(params), true);
     r.send();
   }
 
   void post(Object data, void onSuccess(Object data)) {
-    HttpRequest r = httpRequestFactory();
-    _addResponseHandler(r, onSuccess);
-
+    HttpRequest r = _makeHttpRequest(onSuccess);
     r.open('POST', url, true);
     r.send();
   }
 
   void put(Map<String, String> params, Object data, void onSuccess(Object data)) {
-    HttpRequest r = httpRequestFactory();
-    _addResponseHandler(r, onSuccess);
-
+    HttpRequest r = _makeHttpRequest(onSuccess);
     r.open('PUT', _singleItemUrl(params), true);
     r.send();
   }
 
   void delete(Map<String, String> params, void onSuccess(Object data)) {
-    HttpRequest r = httpRequestFactory();
-    _addResponseHandler(r, onSuccess);
-
+    HttpRequest r = _makeHttpRequest(onSuccess);
     r.open('DELETE', _singleItemUrl(params), true);
     r.send();
   }
 
   String _singleItemUrl(Map<String, String> params) => "$url/${params['id']}";
 
-  void _addResponseHandler(HttpRequest request, void onSuccess(Object data)) {
+  HttpRequest _makeHttpRequest(void onSuccess(Object data)) {
+    HttpRequest request = httpRequestFactory();
+
     request.on.load.add((event) {
       Object data = JSON.parse(request.responseText);
       onSuccess(data);
@@ -64,5 +56,7 @@ class Resource<T> {
     request.on.error.add((event) {
       window.console.error('HttpRequest error: ${event}');
     });
+
+    return request;
   }
 }
