@@ -18,6 +18,7 @@ TestResource() {
           var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.query({}, expectAsync1((data) => expect(['mercury'], data)));
           rf.request.getLogs(callsTo('open', 'GET', '/planets')).verify(happenedOnce);
+          rf.request.getLogs(callsTo('send')).verify(happenedOnce);
         });
       });
     });
@@ -30,6 +31,7 @@ TestResource() {
           var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.get({'id': 'mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
           rf.request.getLogs(callsTo('open', 'GET', '/planets/mercury')).verify(happenedOnce);
+          rf.request.getLogs(callsTo('send')).verify(happenedOnce);
         });
       });
     });
@@ -42,6 +44,7 @@ TestResource() {
           var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.post({'name': 'Mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
           rf.request.getLogs(callsTo('open', 'POST', '/planets')).verify(happenedOnce);
+          rf.request.getLogs(callsTo('send')).verify(happenedOnce);
         });
       });
     });
@@ -54,6 +57,7 @@ TestResource() {
           var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.put({'id': 'mercury'}, {'name': 'Mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
           rf.request.getLogs(callsTo('open', 'PUT', '/planets/mercury')).verify(happenedOnce);
+          rf.request.getLogs(callsTo('send')).verify(happenedOnce);
         });
       });
     });
@@ -66,6 +70,7 @@ TestResource() {
           var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.delete({'id': 'mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
           rf.request.getLogs(callsTo('open', 'DELETE', '/planets/mercury')).verify(happenedOnce);
+          rf.request.getLogs(callsTo('send')).verify(happenedOnce);
         });
       });
     });
