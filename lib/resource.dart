@@ -26,10 +26,7 @@ class Resource<T> {
     HttpRequest r = httpRequestFactory();
     _addResponseHandler(r, onSuccess);
 
-    String id = params['id'];
-    String getUrl = '${url}/${id}';
-
-    r.open('GET', getUrl, true);
+    r.open('GET', _singleItemUrl(params), true);
     r.send();
   }
 
@@ -45,10 +42,7 @@ class Resource<T> {
     HttpRequest r = httpRequestFactory();
     _addResponseHandler(r, onSuccess);
 
-    String id = params['id'];
-    String putUrl = '${url}/${id}';
-
-    r.open('PUT', putUrl, true);
+    r.open('PUT', _singleItemUrl(params), true);
     r.send();
   }
 
@@ -56,12 +50,11 @@ class Resource<T> {
     HttpRequest r = httpRequestFactory();
     _addResponseHandler(r, onSuccess);
 
-    String id = params['id'];
-    String deleteUrl = '${url}/${id}';
-
-    r.open('DELETE', deleteUrl, true);
+    r.open('DELETE', _singleItemUrl(params), true);
     r.send();
   }
+
+  String _singleItemUrl(Map<String, String> params) => "$url/${params['id']}";
 
   void _addResponseHandler(HttpRequest request, void onSuccess(Object data)) {
     request.on.load.add((event) {
