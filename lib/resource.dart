@@ -52,6 +52,17 @@ class Resource<T> {
     r.send();
   }
 
+  void delete(Map<String, String> params, void onSuccess(Object data)) {
+    HttpRequest r = httpRequestFactory();
+    _addResponseHandler(r, onSuccess);
+
+    String id = params['id'];
+    String deleteUrl = '${url}/${id}';
+
+    r.open('DELETE', deleteUrl, true);
+    r.send();
+  }
+
   void _addResponseHandler(HttpRequest request, void onSuccess(Object data)) {
     request.on.load.add((event) {
       Object data = JSON.parse(request.responseText);

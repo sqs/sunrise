@@ -57,5 +57,17 @@ TestResource() {
         });
       });
     });
+
+    group('delete', () {
+      group('basic', () {
+        test('issues HTTP DELETE request and parses JSON', () {
+          String responseText = '{"id": "mercury", "name": "Mercury"}';
+          var rf = new MockHttpRequestFactory(responseText);
+          var planets = new Resource('/planets', httpRequestFactory: rf.factory);
+          planets.delete({'id': 'mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
+          rf.request.getLogs(callsTo('open', 'DELETE', '/planets/mercury')).verify(happenedOnce);
+        });
+      });
+    });
   });
 }
