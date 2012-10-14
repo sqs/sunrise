@@ -16,32 +16,32 @@ class Resource<T> {
 
   void query(Map<String, String> params, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
-    r.open('GET', url, true);
-    r.send();
+    r..open('GET', url, true)
+     ..send();
   }
 
   void get(Map<String, String> params, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
-    r.open('GET', _singleItemUrl(params), true);
-    r.send();
+    r..open('GET', _singleItemUrl(params), true)
+     ..send();
   }
 
   void post(Object data, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
-    r.open('POST', url, true);
-    r.send();
+    r..open('POST', url, true)
+     ..send();
   }
 
   void put(Map<String, String> params, Object data, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
-    r.open('PUT', _singleItemUrl(params), true);
-    r.send();
+    r..open('PUT', _singleItemUrl(params), true)
+     ..send();
   }
 
   void delete(Map<String, String> params, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
-    r.open('DELETE', _singleItemUrl(params), true);
-    r.send();
+    r..open('DELETE', _singleItemUrl(params), true)
+     ..send();
   }
 
   String _singleItemUrl(Map<String, String> params) => "$url/${params['id']}";
