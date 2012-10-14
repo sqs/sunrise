@@ -29,5 +29,15 @@ TestResource() {
         });
       });
     });
+
+    group('post', () {
+      group('basic', () {
+        test('issues HTTP request and parses JSON', () {
+          String responseText = '{"id": "mercury", "name": "Mercury"}';
+          var planets = new Resource('/planets', httpRequestFactory: mockHttpRequestFactory(responseText));
+          planets.post({'name': 'Mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
+        });
+      });
+    });
   });
 }

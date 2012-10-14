@@ -33,6 +33,14 @@ class Resource<T> {
     r.send();
   }
 
+  void post(Object data, void onSuccess(Object data)) {
+    HttpRequest r = httpRequestFactory();
+    _addResponseHandler(r, onSuccess);
+
+    r.open('POST', url, true);
+    r.send();
+  }
+
   void _addResponseHandler(HttpRequest request, void onSuccess(Object data)) {
     request.on.load.add((event) {
       Object data = JSON.parse(request.responseText);
