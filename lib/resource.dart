@@ -29,7 +29,7 @@ class Resource<T> {
     String id = params['id'];
     String getUrl = '${url}/${id}';
 
-    r.open('GET', url, true);
+    r.open('GET', getUrl, true);
     r.send();
   }
 
