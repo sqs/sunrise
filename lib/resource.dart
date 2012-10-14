@@ -41,6 +41,17 @@ class Resource<T> {
     r.send();
   }
 
+  void put(Map<String, String> params, Object data, void onSuccess(Object data)) {
+    HttpRequest r = httpRequestFactory();
+    _addResponseHandler(r, onSuccess);
+
+    String id = params['id'];
+    String putUrl = '${url}/${id}';
+
+    r.open('PUT', putUrl, true);
+    r.send();
+  }
+
   void _addResponseHandler(HttpRequest request, void onSuccess(Object data)) {
     request.on.load.add((event) {
       Object data = JSON.parse(request.responseText);
