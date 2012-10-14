@@ -13,29 +13,35 @@ TestResource() {
 
     group('query', () {
       group('basic', () {
-        test('issues HTTP request and parses JSON', () {
-          var planets = new Resource('/planets', httpRequestFactory: new MockHttpRequestFactory('["mercury"]').factory);
+        test('issues HTTP GET request and parses JSON', () {
+          var rf = new MockHttpRequestFactory('["mercury"]');
+          var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.query({}, expectAsync1((data) => expect(['mercury'], data)));
+          rf.request.getLogs(callsTo('open', 'GET', '/planets')).verify(happenedOnce);
         });
       });
     });
 
     group('get', () {
       group('basic', () {
-        test('issues HTTP request and parses JSON', () {
+        test('issues HTTP GET request and parses JSON', () {
           String responseText = '{"id": "mercury", "name": "Mercury"}';
-          var planets = new Resource('/planets', httpRequestFactory: new MockHttpRequestFactory(responseText).factory);
+          var rf = new MockHttpRequestFactory(responseText);
+          var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.get({'id': 'mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
+          rf.request.getLogs(callsTo('open', 'GET', '/planets/mercury')).verify(happenedOnce);
         });
       });
     });
 
     group('post', () {
       group('basic', () {
-        test('issues HTTP request and parses JSON', () {
+        test('issues HTTP POST request and parses JSON', () {
           String responseText = '{"id": "mercury", "name": "Mercury"}';
-          var planets = new Resource('/planets', httpRequestFactory: new MockHttpRequestFactory(responseText).factory);
+          var rf = new MockHttpRequestFactory(responseText);
+          var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.post({'name': 'Mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
+          rf.request.getLogs(callsTo('open', 'POST', '/planets')).verify(happenedOnce);
         });
       });
     });
