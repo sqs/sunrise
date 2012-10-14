@@ -30,15 +30,4 @@ TestResource() {
       });
     });
   });
-
-  group('ResourceCollection', () {
-    test('populates', () {
-      var planetsResource = new Resource<String>('/planets', httpRequestFactory: mockHttpRequestFactory('["mercury"]'));
-      var collection = new ResourceCollection<String>(planetsResource);
-      collection.onLoad(expectAsync1((ResourceCollection<String> c) {
-        expect(['mercury'], c);
-      }));
-      collection.length; // trigger load
-    });
-  });
 }
