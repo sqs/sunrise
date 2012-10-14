@@ -18,18 +18,22 @@ class MockEventListenerList extends Mock implements html.EventListenerList {
   }
 }
 
-HttpRequestFactory mockHttpRequestFactory(String responseText) {
-  return () {
-    html.HttpRequest r = new MockHttpRequest();
+class MockHttpRequestFactory {
+  final String responseText;
+  final html.HttpRequest request = new MockHttpRequest();
+
+  MockHttpRequestFactory(this.responseText);
+  
+  html.HttpRequest factory() {
     html.HttpRequestEvents mockEvents = new MockHttpRequestEvents();
     html.EventListenerList mockLoadEvents = new MockEventListenerList(true);
     html.EventListenerList mockErrorEvents = new MockEventListenerList(false);
 
-    r.when(callsTo('get on')).alwaysReturn(mockEvents);
-    r.when(callsTo('get responseText')).alwaysReturn(responseText);
+    request.when(callsTo('get on')).alwaysReturn(mockEvents);
+    request.when(callsTo('get responseText')).alwaysReturn(responseText);
     mockEvents.when(callsTo('get load')).alwaysReturn(mockLoadEvents);
     mockEvents.when(callsTo('get error')).alwaysReturn(mockErrorEvents);
 
-    return r;
-  };
+    return request;
+  }
 }

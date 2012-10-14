@@ -14,7 +14,7 @@ TestResource() {
     group('query', () {
       group('basic', () {
         test('issues HTTP request and parses JSON', () {
-          var planets = new Resource('/planets', httpRequestFactory: mockHttpRequestFactory('["mercury"]'));
+          var planets = new Resource('/planets', httpRequestFactory: new MockHttpRequestFactory('["mercury"]').factory);
           planets.query({}, expectAsync1((data) => expect(['mercury'], data)));
         });
       });
@@ -24,7 +24,7 @@ TestResource() {
       group('basic', () {
         test('issues HTTP request and parses JSON', () {
           String responseText = '{"id": "mercury", "name": "Mercury"}';
-          var planets = new Resource('/planets', httpRequestFactory: mockHttpRequestFactory(responseText));
+          var planets = new Resource('/planets', httpRequestFactory: new MockHttpRequestFactory(responseText).factory);
           planets.get({'id': 'mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
         });
       });
@@ -34,7 +34,7 @@ TestResource() {
       group('basic', () {
         test('issues HTTP request and parses JSON', () {
           String responseText = '{"id": "mercury", "name": "Mercury"}';
-          var planets = new Resource('/planets', httpRequestFactory: mockHttpRequestFactory(responseText));
+          var planets = new Resource('/planets', httpRequestFactory: new MockHttpRequestFactory(responseText).factory);
           planets.post({'name': 'Mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
         });
       });
