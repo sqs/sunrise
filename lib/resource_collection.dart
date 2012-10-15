@@ -1,11 +1,13 @@
 typedef void OnChangeFn(ResourceCollection<T> rc);
 typedef void OnLoadFn(ResourceCollection<T> rc);
+typedef T DeserializeFn<T>(Object rawData);
 
 class ResourceCollection<T> implements Collection<T> {
   final Resource<T> resource;
   bool loaded = false;
   OnChangeFn onChangeFn = null;
   OnLoadFn onLoadFn = null;
+  DeserializeFn<T> deserializeFn = null;
 
   Collection<T> _collection = [];
 
@@ -19,7 +21,7 @@ class ResourceCollection<T> implements Collection<T> {
 
   void _load() {
     resource.query({}, (data) {
-      _collection = data;
+      _collection = data.map((e) => (deserializeFn != null) ? deserializeFn(e) : e);
       loaded = true;
       if (onLoadFn != null) {
         onLoadFn(this);

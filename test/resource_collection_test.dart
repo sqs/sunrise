@@ -20,6 +20,14 @@ TestResourceCollection() {
       rf.request.getLogs(callsTo('open', 'GET', '/planets')).verify(happenedOnce);
     });
 
+    test('deserializes', () {
+      var planetsResource = new Resource<String>('/planets', httpRequestFactory: new MockHttpRequestFactory('["mercury"]').factory);
+      var collection = new ResourceCollection<String>(planetsResource);
+      collection.deserializeFn = (Object rawData) => '_${rawData as String}_';
+      collection.length; // trigger load
+      expect(['_mercury_'], collection);
+    });
+
     test('adds', () {
       var rf = new MockHttpRequestFactory('[]');
       var planetsResource = new Resource<String>('/planets', httpRequestFactory: rf.factory);
