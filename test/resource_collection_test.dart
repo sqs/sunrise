@@ -12,6 +12,9 @@ TestResourceCollection() {
       collection.onLoadFn = expectAsync1((ResourceCollection<String> c) {
         expect(['mercury'], c);
       });
+      collection.onChangeFn = expectAsync1((ResourceCollection<String> c) {
+        expect(['mercury'], c);
+      });
       collection.length; // trigger load
     });
   });

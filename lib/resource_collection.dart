@@ -1,8 +1,10 @@
+typedef void OnChangeFn(ResourceCollection<T> rc);
 typedef void OnLoadFn(ResourceCollection<T> rc);
 
 class ResourceCollection<T> implements Collection<T> {
   final Resource<T> resource;
   bool loaded = false;
+  OnChangeFn onChangeFn = null;
   OnLoadFn onLoadFn = null;
 
   Collection<T> _collection = [];
@@ -21,6 +23,9 @@ class ResourceCollection<T> implements Collection<T> {
       loaded = true;
       if (onLoadFn != null) {
         onLoadFn(this);
+      }
+      if (onChangeFn != null) {
+        onChangeFn(this);
       }
     });
   }
