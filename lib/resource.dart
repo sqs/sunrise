@@ -51,7 +51,9 @@ class Resource<T> {
 
     request.on.load.add((event) {
       Object data = JSON.parse(request.responseText);
-      onSuccess(data);
+      if (onSuccess != null) {
+        onSuccess(data);
+      }
     });
     request.on.error.add((event) {
       window.console.error('HttpRequest error: ${event}');

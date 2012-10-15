@@ -30,6 +30,14 @@ class ResourceCollection<T> implements Collection<T> {
     });
   }
 
+  void add(T value) {
+    _collection.add(value);
+    if (onChangeFn != null) {
+      onChangeFn(this);
+    }
+    resource.post(value, null);
+  }
+
   int get length {
     _ensureLoadStarted();
     return _collection.length;

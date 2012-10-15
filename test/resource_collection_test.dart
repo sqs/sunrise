@@ -17,5 +17,21 @@ TestResourceCollection() {
       });
       collection.length; // trigger load
     });
+
+    test('adds', () {
+      var rf = new MockHttpRequestFactory('[]');
+      var planetsResource = new Resource<String>('/planets', httpRequestFactory: rf.factory);
+      var collection = new ResourceCollection<String>(planetsResource);
+      var venusAdded = false;
+      collection.onChangeFn = expectAsync1((ResourceCollection<String> c) {
+        if (venusAdded) {
+          expect((new List.from(c)).indexOf('venus') != -1, reason: 'collection should contain venus');
+        }
+      }, count: 2);
+      expect((new List.from(collection)).indexOf('venus') == -1, reason: 'collection should not contain venus');
+      venusAdded = true;
+      collection.add('venus');
+      rf.request.getLogs(callsTo('open', 'POST', '/planets')).verify(happenedOnce);
+    });
   });
 }
