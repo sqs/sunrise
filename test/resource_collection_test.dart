@@ -7,7 +7,8 @@
 TestResourceCollection() {
   group('ResourceCollection', () {
     test('populates', () {
-      var planetsResource = new Resource<String>('/planets', httpRequestFactory: new MockHttpRequestFactory('["mercury"]').factory);
+      var rf = new MockHttpRequestFactory('["mercury"]');
+      var planetsResource = new Resource<String>('/planets', httpRequestFactory: rf.factory);
       var collection = new ResourceCollection<String>(planetsResource);
       collection.onLoadFn = expectAsync1((ResourceCollection<String> c) {
         expect(['mercury'], c);
@@ -16,6 +17,7 @@ TestResourceCollection() {
         expect(['mercury'], c);
       });
       collection.length; // trigger load
+      rf.request.getLogs(callsTo('open', 'GET', '/planets')).verify(happenedOnce);
     });
 
     test('adds', () {
