@@ -9,8 +9,10 @@ class Resource<T> {
   final HttpRequestFactory httpRequestFactory;
 
   Resource(String url, [HttpRequestFactory httpRequestFactory = null])
-  : url = url,
-    httpRequestFactory = (httpRequestFactory != null) ? httpRequestFactory : (() => new HttpRequest()) {
+  : url = url {
+    if (httpRequestFactory == null) {
+      httpRequestFactory = () => new HttpRequest();
+    }
     collection = new ResourceCollection<T>(this);
   }
 
