@@ -1,0 +1,4 @@
+name: todomvc_server
+dependencies:
+  synth:
+    git: git://github.com/sqs/synth.git
