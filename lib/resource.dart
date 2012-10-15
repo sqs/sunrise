@@ -1,6 +1,8 @@
 typedef HttpRequest HttpRequestFactory();
 typedef void HttpClientResponseCallback(HttpRequest request);
 
+HttpRequest defaultHttpRequestFactory() => new HttpRequest();
+
 class Resource<T> {
   String url;
 
@@ -9,10 +11,8 @@ class Resource<T> {
   final HttpRequestFactory httpRequestFactory;
 
   Resource(String url, [HttpRequestFactory httpRequestFactory = null])
-  : url = url {
-    if (httpRequestFactory == null) {
-      httpRequestFactory = () => new HttpRequest();
-    }
+  : url = url,
+    httpRequestFactory = (httpRequestFactory != null) ? httpRequestFactory : defaultHttpRequestFactory {
     collection = new ResourceCollection<T>(this);
   }
 
