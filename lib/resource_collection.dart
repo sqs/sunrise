@@ -1,6 +1,7 @@
 typedef void OnChangeFn(ResourceCollection<T> rc);
 typedef void OnLoadFn(ResourceCollection<T> rc);
-typedef T DeserializeFn<T>(Object rawData);
+typedef T DeserializeFn<T>(Object rawSingleObjectData);
+typedef T DeserializeListFn<T>(Object rawData);
 typedef Object SerializeFn<T>(T modelObj);
 
 class ResourceCollection<T> implements List<T> {
@@ -9,6 +10,7 @@ class ResourceCollection<T> implements List<T> {
   OnChangeFn onChangeFn = null;
   OnLoadFn onLoadFn = null;
   DeserializeFn<T> deserializeFn = null;
+  DeserializeListFn<T> deserializeListFn = null;
   SerializeFn<T> serializeFn = JSON.stringify;
 
   List<T> _collection = [];
@@ -24,7 +26,8 @@ class ResourceCollection<T> implements List<T> {
 
   void _load() {
     resource.query({}, (data) {
-      _collection = data.map((e) => (deserializeFn != null) ? deserializeFn(e) : e);
+      List<T> objs = (deserializeListFn != null) ? deserializeListFn(data) : data;
+      _collection = (deserializeFn != null) ? objs.map(deserializeFn) : objs;
       loaded = true;
       if (onLoadFn != null) {
         onLoadFn(this);

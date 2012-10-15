@@ -28,6 +28,14 @@ TestResourceCollection() {
       expect(['_mercury_'], collection);
     });
 
+    test('deserializeList', () {
+      var planetsResource = new Resource<String>('/planets', httpRequestFactory: new MockHttpRequestFactory('{"items":["mercury"]}').factory);
+      var collection = new ResourceCollection<String>(planetsResource);
+      collection.deserializeListFn = (Object rawData) => rawData['items'];
+      collection.length; // trigger load
+      expect(['mercury'], collection);
+    });
+
     test('adds', () {
       var rf = new MockHttpRequestFactory('[]');
       var planetsResource = new Resource<String>('/planets', httpRequestFactory: rf.factory);
