@@ -4,6 +4,9 @@
 
 library model;
 
+import '../../lib/sunrise.dart' as sunrise;
+import 'package:web_components/watcher.dart' as watcher;
+
 class MainComponent {
   MainComponent();
 
@@ -28,9 +31,16 @@ MainComponent get viewModel {
 // The real model:
 
 class App {
-  List<Todo> todos;
+  sunrise.Resource<Todo> todosResource;
+  Collection<Todo> todos;
 
-  App() : todos = <Todo>[];
+  App() : todosResource = new sunrise.Resource<Todo>('http://localhost:7001/todos') {
+    todos = todosResource.collection;
+    todos.onChangeFn = (c) => watcher.dispatch();
+    todos.deserializeFn = (Map<String, Object> data) {
+      return new Todo(data['task']);
+    };
+  }
 }
 
 class Todo {
@@ -40,6 +50,7 @@ class Todo {
   Todo(this.task);
 
   String toString() => "$task ${done ? '(done)' : '(not done)'}";
+  Object toJson() => {"task": task};
 }
 
 App _app;
