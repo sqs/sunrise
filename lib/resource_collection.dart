@@ -3,7 +3,7 @@ typedef void OnLoadFn(ResourceCollection<T> rc);
 typedef T DeserializeFn<T>(Object rawData);
 typedef Object SerializeFn<T>(T modelObj);
 
-class ResourceCollection<T> implements Collection<T> {
+class ResourceCollection<T> implements List<T> {
   final Resource<T> resource;
   bool loaded = false;
   OnChangeFn onChangeFn = null;
@@ -11,7 +11,8 @@ class ResourceCollection<T> implements Collection<T> {
   DeserializeFn<T> deserializeFn = null;
   SerializeFn<T> serializeFn = JSON.stringify;
 
-  Collection<T> _collection = [];
+  List<T> _collection = [];
+  List<T> get collection => new List.from(_collection);
 
   ResourceCollection(this.resource);
 
@@ -32,6 +33,11 @@ class ResourceCollection<T> implements Collection<T> {
         onChangeFn(this);
       }
     });
+  }
+
+  T operator [](int index) {
+    _ensureLoadStarted();
+    return _collection[index];
   }
 
   void add(T value) {
