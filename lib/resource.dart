@@ -29,12 +29,14 @@ class Resource<T> {
   void post(Object data, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
     r..open('POST', url, true)
+     ..setRequestHeader('Content-Type', 'application/json')
      ..send(_stringifyData(data));
   }
 
   void put(Map<String, String> params, Object data, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
     r..open('PUT', _singleItemUrl(params), true)
+     ..setRequestHeader('Content-Type', 'application/json')
      ..send(_stringifyData(data));
   }
 
