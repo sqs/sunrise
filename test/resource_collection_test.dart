@@ -42,6 +42,7 @@ TestResourceCollection() {
       venusAdded = true;
       collection.add('venus');
       rf.request.getLogs(callsTo('open', 'POST', '/planets')).verify(happenedOnce);
+      rf.request.getLogs(callsTo('send', '"venus"')).verify(happenedOnce);
     });
 
     test('Iterator', () {

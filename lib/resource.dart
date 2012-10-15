@@ -17,13 +17,13 @@ class Resource<T> {
   void query(Map<String, String> params, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
     r..open('GET', url, true)
-     ..send();
+     ..send(null);
   }
 
   void get(Map<String, String> params, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
     r..open('GET', _singleItemUrl(params), true)
-     ..send();
+     ..send(null);
   }
 
   void post(Object data, void onSuccess(Object data)) {
@@ -41,7 +41,7 @@ class Resource<T> {
   void delete(Map<String, String> params, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
     r..open('DELETE', _singleItemUrl(params), true)
-     ..send();
+     ..send(null);
   }
 
   String _singleItemUrl(Map<String, String> params) => "$url/${params['id']}";

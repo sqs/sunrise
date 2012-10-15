@@ -1,6 +1,7 @@
 typedef void OnChangeFn(ResourceCollection<T> rc);
 typedef void OnLoadFn(ResourceCollection<T> rc);
 typedef T DeserializeFn<T>(Object rawData);
+typedef Object SerializeFn<T>(T modelObj);
 
 class ResourceCollection<T> implements Collection<T> {
   final Resource<T> resource;
@@ -8,6 +9,7 @@ class ResourceCollection<T> implements Collection<T> {
   OnChangeFn onChangeFn = null;
   OnLoadFn onLoadFn = null;
   DeserializeFn<T> deserializeFn = null;
+  SerializeFn<T> serializeFn = JSON.stringify;
 
   Collection<T> _collection = [];
 
@@ -37,7 +39,7 @@ class ResourceCollection<T> implements Collection<T> {
     if (onChangeFn != null) {
       onChangeFn(this);
     }
-    resource.post(value, null);
+    resource.post(serializeFn(value), null);
   }
 
   bool every(bool f(T element)) {
