@@ -1,5 +1,5 @@
-typedef void OnChangeFn(ResourceCollection<T> rc);
-typedef void OnLoadFn(ResourceCollection<T> rc);
+typedef void OnChangeFn(ResourceCollection rc);
+typedef void OnLoadFn(ResourceCollection rc);
 typedef T DeserializeFn<T>(Object rawSingleObjectData);
 typedef T DeserializeListFn<T>(Object rawData);
 typedef Object SerializeFn<T>(T modelObj);
