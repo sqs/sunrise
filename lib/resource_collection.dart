@@ -47,6 +47,11 @@ class ResourceCollection<T> implements Collection<T> {
     return _collection.every(f);
   }
 
+  Collection<T> filter(bool f(T element)) {
+    _ensureLoadStarted();
+    return _collection.filter(f);
+  }
+
   void forEach(void f(T element)) {
     _ensureLoadStarted();
     _collection.forEach(f);
@@ -60,5 +65,10 @@ class ResourceCollection<T> implements Collection<T> {
   Iterator<T> iterator() {
     _ensureLoadStarted();
     return _collection.iterator();
+  }
+
+  Collection map(f(T element)) {
+    _ensureLoadStarted();
+    return _collection.map(f);
   }
 }
