@@ -9,9 +9,9 @@ TestResourceCollection() {
     test('populates', () {
       var planetsResource = new Resource<String>('/planets', httpRequestFactory: new MockHttpRequestFactory('["mercury"]').factory);
       var collection = new ResourceCollection<String>(planetsResource);
-      collection.onLoad(expectAsync1((ResourceCollection<String> c) {
+      collection.onLoadFn = expectAsync1((ResourceCollection<String> c) {
         expect(['mercury'], c);
-      }));
+      });
       collection.length; // trigger load
     });
   });

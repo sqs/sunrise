@@ -3,15 +3,11 @@ typedef void OnLoadFn(ResourceCollection<T> rc);
 class ResourceCollection<T> implements Collection<T> {
   final Resource<T> resource;
   bool loaded = false;
+  OnLoadFn onLoadFn = null;
 
-  OnLoadFn _onLoadFn = null;
   Collection<T> _collection = [];
 
   ResourceCollection(this.resource);
-
-  void onLoad(void onLoadFn(ResourceCollection<T> rc)) {
-    _onLoadFn = onLoadFn;
-  }
 
   void _ensureLoadStarted() {
     if (loaded == false) {
@@ -23,8 +19,8 @@ class ResourceCollection<T> implements Collection<T> {
     resource.query({}, (data) {
       _collection = data;
       loaded = true;
-      if (_onLoadFn != null) {
-        _onLoadFn(this);
+      if (onLoadFn != null) {
+        onLoadFn(this);
       }
     });
   }
