@@ -29,13 +29,13 @@ class Resource<T> {
   void post(Object data, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
     r..open('POST', url, true)
-     ..send();
+     ..send(_stringifyData(data));
   }
 
   void put(Map<String, String> params, Object data, void onSuccess(Object data)) {
     HttpRequest r = _makeHttpRequest(onSuccess);
     r..open('PUT', _singleItemUrl(params), true)
-     ..send();
+     ..send(_stringifyData(data));
   }
 
   void delete(Map<String, String> params, void onSuccess(Object data)) {
@@ -60,5 +60,13 @@ class Resource<T> {
     });
 
     return request;
+  }
+
+  String _stringifyData(Object data) {
+    if (data is String) {
+      return data;
+    } else {
+      return JSON.stringify(data);
+    }
   }
 }

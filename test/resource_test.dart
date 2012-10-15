@@ -44,7 +44,7 @@ TestResource() {
           var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.post({'name': 'Mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
           rf.request.getLogs(callsTo('open', 'POST', '/planets')).verify(happenedOnce);
-          rf.request.getLogs(callsTo('send')).verify(happenedOnce);
+          rf.request.getLogs(callsTo('send', '{"name":"Mercury"}')).verify(happenedOnce);
         });
       });
     });
@@ -57,7 +57,7 @@ TestResource() {
           var planets = new Resource('/planets', httpRequestFactory: rf.factory);
           planets.put({'id': 'mercury'}, {'name': 'Mercury'}, expectAsync1((data) => expect({'id': 'mercury', 'name': 'Mercury'}, data)));
           rf.request.getLogs(callsTo('open', 'PUT', '/planets/mercury')).verify(happenedOnce);
-          rf.request.getLogs(callsTo('send')).verify(happenedOnce);
+          rf.request.getLogs(callsTo('send', '{"name":"Mercury"}')).verify(happenedOnce);
         });
       });
     });
