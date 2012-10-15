@@ -33,5 +33,14 @@ TestResourceCollection() {
       collection.add('venus');
       rf.request.getLogs(callsTo('open', 'POST', '/planets')).verify(happenedOnce);
     });
+
+    test('Iterator', () {
+      var rf = new MockHttpRequestFactory('["mercury"]');
+      var planetsResource = new Resource<String>('/planets', httpRequestFactory: rf.factory);
+      var collection = new ResourceCollection<String>(planetsResource);
+      collection.length; // trigger load
+      expect(true, collection.every((e) => e == 'mercury'));
+      collection.forEach(expectAsync1((e) => expect('mercury', e)));
+    });
   });
 }

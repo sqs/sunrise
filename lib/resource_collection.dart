@@ -38,6 +38,16 @@ class ResourceCollection<T> implements Collection<T> {
     resource.post(value, null);
   }
 
+  bool every(bool f(T element)) {
+    _ensureLoadStarted();
+    return _collection.every(f);
+  }
+
+  void forEach(void f(T element)) {
+    _ensureLoadStarted();
+    _collection.forEach(f);
+  }
+
   int get length {
     _ensureLoadStarted();
     return _collection.length;
