@@ -71,6 +71,11 @@ class ResourceCollection<T> implements List<T> {
     return _collection.length;
   }
 
+  bool isEmpty() {
+    _ensureLoadStarted();
+    return _collection.isEmpty();
+  }
+
   Iterator<T> iterator() {
     _ensureLoadStarted();
     return _collection.iterator();
