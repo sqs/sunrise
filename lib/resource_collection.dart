@@ -1,5 +1,6 @@
 typedef void OnChangeFn(ResourceCollection rc);
 typedef void OnLoadFn(ResourceCollection rc);
+typedef Map<String, String> IdParamsFn<T>(T modelObj);
 typedef T DeserializeFn<T>(Object rawSingleObjectData);
 typedef T DeserializeListFn<T>(Object rawData);
 typedef Object SerializeFn<T>(T modelObj);
@@ -9,6 +10,7 @@ class ResourceCollection<T> implements List<T> {
   bool loaded = false;
   OnChangeFn onChangeFn = null;
   OnLoadFn onLoadFn = null;
+  IdParamsFn<T> idParamsFn = null;
   DeserializeFn<T> deserializeFn = null;
   DeserializeListFn<T> deserializeListFn = null;
   SerializeFn<T> serializeFn = JSON.stringify;
@@ -71,6 +73,11 @@ class ResourceCollection<T> implements List<T> {
     return _collection.length;
   }
 
+  int indexOf(T element, [int start = 0]) {
+    _ensureLoadStarted();
+    return _collection.indexOf(element, start);
+  }
+
   bool isEmpty() {
     _ensureLoadStarted();
     return _collection.isEmpty();
@@ -84,6 +91,14 @@ class ResourceCollection<T> implements List<T> {
   Collection map(f(T element)) {
     _ensureLoadStarted();
     return _collection.map(f);
+  }
+
+  T removeAt(int index) {
+    T removedElement = _collection.removeAt(index);
+    if (onChangeFn != null) {
+      onChangeFn(this);
+    }
+    resource.delete(idParamsFn(removedElement), null);
   }
 
   String toString() {

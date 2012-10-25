@@ -53,6 +53,26 @@ TestResourceCollection() {
       rf.request.getLogs(callsTo('send', '"venus"')).verify(happenedOnce);
     });
 
+    test('removes', () {
+      var rf = new MockHttpRequestFactory('["mercury","venus"]');
+      var planetsResource = new Resource<String>('/planets', httpRequestFactory: rf.factory);
+      var collection = new ResourceCollection<String>(planetsResource);
+      var venusRemoved = false;
+      collection.idParamsFn = (planetName) => {'id': planetName};
+      collection.onChangeFn = expectAsync1((ResourceCollection<String> c) {
+        if (venusRemoved) {
+          expect((new List.from(c)).contains('venus') == false, reason: 'collection should not contain venus');
+        }
+      }, count: 2);
+      collection.onLoadFn = expectAsync1((ResourceCollection<String> c) {
+        venusRemoved = true;
+        c.removeAt(c.indexOf('venus'));
+      });
+      collection.length; // trigger load
+      rf.request.getLogs(callsTo('open', 'DELETE', '/planets/venus')).verify(happenedOnce);
+      rf.request.getLogs(callsTo('send', null)).verify(happenedExactly(2));
+    });
+
     test('Iterator', () {
       var rf = new MockHttpRequestFactory('["mercury"]');
       var planetsResource = new Resource<String>('/planets', httpRequestFactory: rf.factory);
