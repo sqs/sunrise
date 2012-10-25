@@ -85,4 +85,8 @@ class ResourceCollection<T> implements List<T> {
     _ensureLoadStarted();
     return _collection.map(f);
   }
+
+  String toString() {
+    return _collection.toString();
+  }
 }
