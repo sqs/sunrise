@@ -20,8 +20,10 @@ class ResourceCollection<T> implements List<T> {
 
   ResourceCollection(this.resource);
 
+  bool _loadStarted = false;
   void _ensureLoadStarted() {
-    if (loaded == false) {
+    if (loaded == false && _loadStarted == false) {
+      _loadStarted = true;
       _load();
     }
   }
